@@ -1,5 +1,5 @@
-import React from 'react';
-import Header from './Header';
+import React from "react"
+import Header from "./Header"
 
 // ----------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ const HomeLayout: React.FC = ({ children }) => {
             <Header />
             <div>{children}</div>
         </div>
-    );
-};
+    )
+}
 
-export default HomeLayout;
+export default HomeLayout

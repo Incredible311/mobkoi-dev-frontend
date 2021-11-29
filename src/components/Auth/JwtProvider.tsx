@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { getInitialize } from '../../redux/slices/authJwt';
+import React, { useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { getInitialize } from "../../redux/slices/authJwt"
 
 const JwtProvider: React.FC = ({ children }) => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getInitialize());
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(getInitialize())
+    }, [dispatch])
 
-  return <>{children}</>;
-};
+    return <>{children}</>
+}
 
-export default JwtProvider;
+export default JwtProvider

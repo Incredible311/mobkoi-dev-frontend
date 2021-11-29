@@ -1,19 +1,17 @@
-import { ReactElement } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import { ReactElement } from "react"
+import Typography from "@material-ui/core/Typography"
+import Link from "@material-ui/core/Link"
 
-function Copyright() : ReactElement {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="">
-        My Campaign
-      </Link>
-      {' '}
-      {new Date().getFullYear()}
-      .
-    </Typography>
-  )
+function Copyright(): ReactElement {
+    return (
+        <Typography variant="body2" color="textSecondary" align="center">
+            {"Copyright © "}
+            <Link color="inherit" href="">
+                My Campaign
+            </Link>{" "}
+            {new Date().getFullYear()}.
+        </Typography>
+    )
 }
 
-export default Copyright;
+export default Copyright

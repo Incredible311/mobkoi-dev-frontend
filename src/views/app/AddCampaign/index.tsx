@@ -1,61 +1,63 @@
-import { useCallback, useState, useEffect, ReactElement } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { useSelector } from 'react-redux';
-import { Row, Col, Container, Spinner } from 'react-bootstrap';
-import Button from '@material-ui/core/Button';
-import Notification from '../../../components/Notification';
-import useCampaign from '../../../hooks/useCampaign';
-import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from "react-router-dom";
-import { IRootState } from '../../../redux/store';
+import { useCallback, useState, useEffect, ReactElement } from "react"
+import TextField from "@material-ui/core/TextField"
+import { useSelector } from "react-redux"
+import { Row, Col, Container, Spinner } from "react-bootstrap"
+import Button from "@material-ui/core/Button"
+import Notification from "../../../components/Notification"
+import useCampaign from "../../../hooks/useCampaign"
+import { makeStyles } from "@material-ui/core/styles"
+import { useHistory } from "react-router-dom"
+import { IRootState } from "../../../redux/store"
 
 const useStyles = makeStyles((theme) => ({
     content: {
         backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(6, 6, 6),
+        padding: theme.spacing(6, 6, 6)
     },
     actionBtnGruop: {
-        display: 'flex',
-        justifyContent: 'flex-end'
+        display: "flex",
+        justifyContent: "flex-end"
     },
     inputTitle: {
-        marginBottom: '0px',
-        marginTop: '20px'
+        marginBottom: "0px",
+        marginTop: "20px"
     }
 }))
 
 function AddCampaign(): ReactElement {
     const history = useHistory()
-    const classes = useStyles();
-    const { isLoading } = useSelector((state: IRootState) => state.campaign);
+    const classes = useStyles()
+    const { isLoading } = useSelector((state: IRootState) => state.campaign)
 
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [targetImpressions, setTargetImpressions] = useState('')
+    const [startDate, setStartDate] = useState("")
+    const [endDate, setEndDate] = useState("")
+    const [targetImpressions, setTargetImpressions] = useState("")
 
-    const { createCampaign } = useCampaign();
+    const { createCampaign } = useCampaign()
 
     const initializeState = useCallback(() => {
-        setStartDate('');
-        setEndDate('');
-        setTargetImpressions('');
-    }, []);
+        setStartDate("")
+        setEndDate("")
+        setTargetImpressions("")
+    }, [])
 
-    const handleChange = useCallback((event) => {
-        const { name, value } = event.currentTarget;
+    const handleChange = useCallback(
+        (event) => {
+            const { name, value } = event.currentTarget
 
-        if (name === "start") {
-            setStartDate(value);
-        } else if (name === "end") {
-            setEndDate(value);
-        } else if (name === "target") {
-            setTargetImpressions(value)
-        }
-    }, [setStartDate, setEndDate, setTargetImpressions]);
+            if (name === "start") {
+                setStartDate(value)
+            } else if (name === "end") {
+                setEndDate(value)
+            } else if (name === "target") {
+                setTargetImpressions(value)
+            }
+        },
+        [setStartDate, setEndDate, setTargetImpressions]
+    )
 
     const handleSaveNewCampaign = useCallback(async () => {
         try {
-
             if (startDate && endDate && targetImpressions) {
                 const dateStart = new Date(startDate).getTime()
                 const dateEnd = new Date(endDate).getTime()
@@ -63,24 +65,23 @@ function AddCampaign(): ReactElement {
                     start: dateStart,
                     end: dateEnd,
                     targetImpressions: parseInt(targetImpressions)
-                });
-                Notification('success', 'Save new Campaign success!');
-                history.push("/home");
-                initializeState();
+                })
+                Notification("success", "Save new Campaign success!")
+                history.push("/home")
+                initializeState()
             } else {
-                Notification('error', 'All input fields are required!');
+                Notification("error", "All input fields are required!")
             }
-
         } catch (err) {
-            Notification("warning", (err as Error).message);
+            Notification("warning", (err as Error).message)
         }
-    }, [startDate, endDate, targetImpressions]);
+    }, [startDate, endDate, targetImpressions])
 
     const handleCancelCampaign = useCallback(() => {
-        setStartDate("");
-        setEndDate("");
-        setTargetImpressions("");
-        history.push("/home");
+        setStartDate("")
+        setEndDate("")
+        setTargetImpressions("")
+        history.push("/home")
     }, [])
 
     return (
@@ -129,7 +130,12 @@ function AddCampaign(): ReactElement {
             </Row>
             <br />
             <div className={classes.actionBtnGruop}>
-                <Button onClick={handleCancelCampaign} className="mx-2" variant="contained" color="primary">
+                <Button
+                    onClick={handleCancelCampaign}
+                    className="mx-2"
+                    variant="contained"
+                    color="primary"
+                >
                     Cancel
                 </Button>
                 <Button onClick={handleSaveNewCampaign} variant="contained" color="primary">
@@ -137,7 +143,7 @@ function AddCampaign(): ReactElement {
                 </Button>
             </div>
         </Container>
-    );
+    )
 }
 
-export default AddCampaign;
+export default AddCampaign
