@@ -65,18 +65,17 @@ const setSession = (jwtToken: string) => {
 export function login(loginArgs: ILogin) {
   return async (dispatch: any) => {
     try {
-      
-
-      // const jwtToken = JSON.parse(result.data.login).token;
-      setSession("jwtToken");
-      const user = {
-        id: 0,
-        email: "freedi@gmail.com"
+      const res = await axios({
+        method: 'post',
+        url: `${process.env.REACT_APP_API_URL}/login`,
+        data: loginArgs
+      });
+      if (res) {
+        const jwtToken = res.data.token;
+        setSession(jwtToken);
+        const user: IDecoded = jwtDecode(jwtToken);
+        dispatch(slice.actions.authSuccess({ user }));
       }
-      // const user: IDecoded = jwtDecode(jwtToken);
-      dispatch(slice.actions.authSuccess({ user }));
-
-
       return true;
     } catch (error) {
       throw error;
@@ -87,12 +86,17 @@ export function login(loginArgs: ILogin) {
 export function register(registerArgs: IRegister) {
   return async (dispatch: any) => {
     try {
-
-      // const jwtToken = JSON.parse(result.data.signup).token;
-      // setSession(jwtToken);
-
-      // const user: IDecoded = jwtDecode(jwtToken);
-      // dispatch(slice.actions.authSuccess({ user }));
+      const res = await axios({
+        method: 'post',
+        url: `${process.env.REACT_APP_API_URL}/register`,
+        data: registerArgs
+      });
+      if (res) {
+        const jwtToken = res.data.token;
+        setSession(jwtToken);
+        const user: IDecoded = jwtDecode(jwtToken);
+        dispatch(slice.actions.authSuccess({ user }));
+      }
 
       return true;
     } catch (error) {
@@ -116,36 +120,27 @@ export function logout() {
 
 export function getInitialize() {
   return async (dispatch: any) => {
-    // dispatch(slice.actions.startLoading());
+    dispatch(slice.actions.startLoading());
 
     try {
       const accessToken = localStorage.getItem('jwtToken');
-      // if (accessToken && isValidToken(accessToken)) {
-        setSession("accessToken");
-        // const result = await getApolloClient().query({
-        //   query: MeQuery
-        // });
-        const user = {
-          id: 0,
-          email: "freedi@gmail.com"
-        }
+      if (accessToken && isValidToken(accessToken)) {
+        setSession(accessToken);
+        const user: IDecoded = jwtDecode(accessToken);
         dispatch(
           slice.actions.getInitialize({
             isAuthenticated: true,
             user: user
           })
         );
-        setSession("jwtToken");
-      
-
-      // } else {
-      //   dispatch(
-      //     slice.actions.getInitialize({
-      //       isAuthenticated: false,
-      //       user: false
-      //     })
-      //   );
-      // }
+      } else {
+        dispatch(
+          slice.actions.getInitialize({
+            isAuthenticated: false,
+            user: false
+          })
+        );
+      }
     } catch (error) {
       dispatch(
         slice.actions.getInitialize({

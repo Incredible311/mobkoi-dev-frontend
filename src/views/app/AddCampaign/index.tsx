@@ -1,11 +1,13 @@
 import { useCallback, useState, useEffect, ReactElement } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { Row, Col, Container } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { Row, Col, Container, Spinner } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
 import Notification from '../../../components/Notification';
 import useCampaign from '../../../hooks/useCampaign';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
+import { IRootState } from '../../../redux/store';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -25,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 function AddCampaign(): ReactElement {
     const history = useHistory()
     const classes = useStyles();
+    const { isLoading } = useSelector((state: IRootState) => state.campaign);
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [targetImpressions, setTargetImpressions] = useState('')
@@ -61,6 +65,7 @@ function AddCampaign(): ReactElement {
                     targetImpressions: parseInt(targetImpressions)
                 });
                 Notification('success', 'Save new Campaign success!');
+                history.push("/home");
                 initializeState();
             } else {
                 Notification('error', 'All input fields are required!');
@@ -128,7 +133,7 @@ function AddCampaign(): ReactElement {
                     Cancel
                 </Button>
                 <Button onClick={handleSaveNewCampaign} variant="contained" color="primary">
-                    Save
+                    {isLoading ? <Spinner animation="border" size="sm" /> : "Save"}
                 </Button>
             </div>
         </Container>

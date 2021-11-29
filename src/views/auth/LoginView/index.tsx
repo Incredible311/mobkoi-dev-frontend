@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://images.unsplash.com/photo-1635623267084-7beec511a45f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzODEwNDA2NQ&ixlib=rb-1.2.1&q=80&w=1080)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -72,7 +72,7 @@ function LoginView () : ReactElement {
       });
       Notification('success', 'Login Success!');
     } catch (err) {
-      Notification("warning", (err as Error).message.replace('GraphQL error:', ''));
+      Notification("warning", (err as Error).message);
     }
     if(isMounted) setLoading(false);
   }, [email, password, isMounted]);
@@ -91,7 +91,6 @@ function LoginView () : ReactElement {
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -107,7 +106,6 @@ function LoginView () : ReactElement {
               autoFocus
             />
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth

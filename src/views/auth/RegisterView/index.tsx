@@ -12,13 +12,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useAuth from '../../../hooks/useAuth';
 import Notification from '../../../components/Notification';
+import { IError } from "../../../interfaces";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://images.unsplash.com/photo-1635623267084-7beec511a45f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzODEwNDA2NQ&ixlib=rb-1.2.1&q=80&w=1080)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -77,7 +78,7 @@ function RegisterView() : ReactElement {
 
         Notification('success', 'Register Success!');
       } catch (err) {
-        Notification("warning", (err as Error).message.replace('GraphQL error:', ''));
+          Notification("warning", (err as IError).message);
       }
       if(isMounted) setLoading(false);
   }, [email, firstname, lastname, password]);
@@ -100,7 +101,6 @@ function RegisterView() : ReactElement {
                 <TextField
                   autoComplete="fname"
                   name="firstName"
-                  variant="outlined"
                   required
                   fullWidth
                   id="firstName"
@@ -115,7 +115,6 @@ function RegisterView() : ReactElement {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  variant="outlined"
                   required
                   fullWidth
                   id="lastName"
@@ -131,7 +130,6 @@ function RegisterView() : ReactElement {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  variant="outlined"
                   required
                   fullWidth
                   id="email"
@@ -147,7 +145,6 @@ function RegisterView() : ReactElement {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  variant="outlined"
                   required
                   fullWidth
                   name="password"
