@@ -72,7 +72,7 @@ function LoginView () : ReactElement {
       });
       Notification('success', 'Login Success!');
     } catch (err) {
-      Notification("warning", (err as Error).message.replace('GraphQL error:', ''));
+      Notification("warning", (err as Error).message);
     }
     if(isMounted) setLoading(false);
   }, [email, password, isMounted]);
@@ -91,7 +91,6 @@ function LoginView () : ReactElement {
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -107,7 +106,6 @@ function LoginView () : ReactElement {
               autoFocus
             />
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth

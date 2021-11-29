@@ -1,12 +1,10 @@
-import { useCallback, ReactElement } from 'react';
-import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { ReactElement, useCallback } from 'react';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
 
@@ -14,6 +12,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    cursor: 'pointer'
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9
@@ -21,46 +20,50 @@ const useStyles = makeStyles(() => ({
   cardContent: {
     flexGrow: 1,
     wordBreak: 'break-word'
-  },
-  deleteIcon: {
-    marginLeft: 'auto!important',
-    marginRight: 0,
   }
 }));
 
 interface ICampaignCard {
+  id: string;
   start: number;
   end: number;
+  target: number;
+  delivered: number;
   index: number;
-  onDeleteCampaign: (campaignIndex: number) => void;
 }
 
-function CampaignCard (props: ICampaignCard) : ReactElement {
+function CampaignCard(props: ICampaignCard): ReactElement {
 
   const classes = useStyles();
 
-  const handleOnDelete = useCallback(() => {
-    props.onDeleteCampaign(props.index);
-  }, [props]);
+  const history = useHistory();
+
+  const onRouteCampaign = useCallback((id) => {
+    history.push(`/campaign/${id}`)
+  }, [])
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} onClick={() => onRouteCampaign(props.id)}>
       <CardMedia
         className={classes.cardMedia}
-        image={'https://images.unsplash.com/photo-1635623267084-7beec511a45f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzODEwNDA2NQ&ixlib=rb-1.2.1&q=80&w=1080'}
+        image={'https://source.unsplash.com/random'}
         title="Image title"
       />
-      <CardContent className={classes.cardContent}>
-        <Typography gutterBottom variant="h5" component="h2">
-          {props.start}
+      <CardContent className={`${classes.cardContent} m-1 p-2`}>
+        <Typography>
+          Start: {new Date(props.start).toLocaleDateString().toString()}
         </Typography>
         <Typography>
-          {props.end}
+          End: {new Date(props.end).toLocaleDateString().toString()}
+        </Typography>
+        <Typography>
+          Target Impressions: {props.target}
+        </Typography>
+        <Typography>
+          Delivered Impressions: {props.delivered}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small" color="primary" className={classes.deleteIcon} onClick={handleOnDelete}><DeleteIcon color="primary" /></Button>
-      </CardActions>
+
     </Card>
   );
 }

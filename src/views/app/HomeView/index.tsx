@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import InfinitScroll from 'react-infinite-scroll-component';
 import Grid from '@material-ui/core/Grid';
-import DeleteDialog from '../../../components/DeleteDialog';
+import { Spinner } from 'react-bootstrap';
 import CampaignCard from '../../../components/CampaignCard';
 import { getCampaigns } from '../../../redux/slices/campaign';
 import { IRootState } from '../../../redux/store';
@@ -47,10 +47,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
-  deleteIcon: {
-    marginLeft: 'auto!important',
-    marginRight: 0,
-  },
   actionTopView: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -58,72 +54,65 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function HomeView() : ReactElement {
+function HomeView(): ReactElement {
 
   const history = useHistory()
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { campaigns, total, hasMore } = useSelector((state: IRootState) => state.campaign);
+  const { campaigns, isLoading } = useSelector((state: IRootState) => state.campaign);
 
   const [limit, setLimit] = useState(16)
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [isFetch, setIsFetch] = useState(true);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [campaignId, setCampaignId] = useState('');
+  const [hasMore, setHasMore] = useState(true);
+  const [campaignList, setCampaignList] = useState([])
 
   const getCampaignDatas = useCallback(() => {
-    if(isFetch) {
-      dispatch(getCampaigns(limit, page));
+    if (isFetch) {
+      dispatch(getCampaigns());
       setIsFetch(false);
     }
-  }, [dispatch, isFetch, page]);
+  }, [dispatch]);
+
+  const getinitialCampaignList = useCallback(() => {
+    const data = campaigns.slice((page - 1) * limit, page * limit)
+    setCampaignList(campaignList.concat(data))
+    if (campaignList.length >= campaigns.length) {
+      setHasMore(false);
+    } else {
+      setHasMore(true)
+    }
+  }, [setCampaignList, campaignList, campaigns, limit, page, setHasMore])
 
   useEffect(() => {
     // Get registerd campaign datas
     getCampaignDatas();
-  }, [dispatch, isFetch, page]);
+    if (campaigns.length > 0) {
+      if (campaignList.length < page * limit) {
+        getinitialCampaignList();
+      }
+    }
+  }, [page, campaigns]);
 
   const handleNextPage = useCallback(() => {
-    console.log("fetch: ", page)
     setTimeout(() => {
       setPage(page + 1);
       setIsFetch(true);
     }, 1000);
-  }, [page]);
-
-  const onDeleteCampaign = useCallback((campaignIndex: number) => {
-    setCampaignId((campaigns[campaignIndex] as ICampaignUpdate).id);
-    setIsDeleteOpen(true);
-  }, [campaigns]);
-
-  const onCloseDeleteDialog = useCallback(() => {
-    setIsDeleteOpen(false);
-  }, []);
-
-  const onDeleteSuccess = useCallback(() => {
-    setIsDeleteOpen(false);
-    setPage(0);
-    setIsFetch(true);
-  }, []);
-
-  const showDeleteDialog = useMemo(() => {
-
-    return (
-      <DeleteDialog
-        isOpen = {isDeleteOpen}
-        id = {campaignId}
-        onCloseDeleteDialog = {onCloseDeleteDialog}
-        onDeleteSuccess = {onDeleteSuccess}
-      />
-    );
-  }, [isDeleteOpen]);
+  }, [page, setPage]);
 
   const showCampaignCards = useMemo(() => {
-    return campaigns.length > 0 ? campaigns.map((campaign: ICampaignUpdate, index: number) => (
-      <Grid item key={campaign.id} xs={12} sm={6} md={4} lg={3}>
-        <CampaignCard start={campaign.start} end={campaign.end} index={index} onDeleteCampaign={onDeleteCampaign} />
-      </Grid>)) : <p style={{ fontSize: '20px', textAlign: 'center', width: '100%' }}>There is no campaign</p>;
-  }, [campaigns])
+    return campaignList.length > 0 && campaignList.map((campaign: ICampaignUpdate, index: number) => (
+      <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+        <CampaignCard
+          id={campaign.id}
+          start={campaign.startDate}
+          end={campaign.endDate}
+          target={campaign.targetImpressions}
+          delivered={campaign.deliveredImpressions}
+          index={index} />
+      </Grid>))
+  }, [campaignList])
 
   return (
     <main>
@@ -135,21 +124,20 @@ function HomeView() : ReactElement {
         </Container>
         <Container className={classes.cardGrid}>
           <InfinitScroll
-              dataLength={total}
-              next={() => handleNextPage()}
-              hasMore={hasMore}
-              loader={<h5 style={{textAlign: 'center'}}>Loading...</h5>}
-              style={{ overflow: 'inherit' }}
-            >
-              <Grid container spacing={3}>
-                {
-                  showCampaignCards
-                }
-              </Grid>
-            </InfinitScroll>
+            dataLength={campaignList.length}
+            next={handleNextPage}
+            hasMore={hasMore}
+            loader={<div className="d-flex justify-content-center m-4"><Spinner animation="border" /></div>}
+            style={{ overflow: 'inherit' }}
+          >
+            <Grid container spacing={3}>
+              {
+                showCampaignCards
+              }
+            </Grid>
+          </InfinitScroll>
         </Container>
       </div>
-      {showDeleteDialog}
     </main>
   );
 }

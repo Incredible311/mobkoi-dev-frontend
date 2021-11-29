@@ -30,11 +30,13 @@ export interface ICampaign {
 
 export interface ICampaignUpdate {
     id: string,
-    start: number,
-    end: number,
-    targetImpressions: number
+    startDate: number,
+    endDate: number,
+    targetImpressions: number,
+    deliveredImpressions: number
 }
 
-export interface ICampaignDelete {
-    campaign_id: string
+export interface IError {
+    response: string,
+    message: string
 }
