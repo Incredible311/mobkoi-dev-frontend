@@ -46,7 +46,7 @@ function CampaignCard(props: ICampaignCard): ReactElement {
     <Card className={classes.card} onClick={() => onRouteCampaign(props.id)}>
       <CardMedia
         className={classes.cardMedia}
-        image={'https://images.unsplash.com/photo-1635623267084-7beec511a45f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzODEwNDA2NQ&ixlib=rb-1.2.1&q=80&w=1080'}
+        image={'https://source.unsplash.com/random'}
         title="Image title"
       />
       <CardContent className={`${classes.cardContent} m-1 p-2`}>
