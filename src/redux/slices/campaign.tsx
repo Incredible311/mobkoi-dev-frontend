@@ -117,7 +117,6 @@ export function createCampaign(campaignArgs: ICampaign) {
         endDate: campaignArgs.end,
         targetImpressions: campaignArgs.targetImpressions
       }
-      console.log("create data", data);
 
       const token = localStorage.getItem("jwtToken");
       const res = await axios({

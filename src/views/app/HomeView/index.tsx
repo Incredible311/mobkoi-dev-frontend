@@ -95,7 +95,6 @@ function HomeView(): ReactElement {
   }, [page, campaigns]);
 
   const handleNextPage = useCallback(() => {
-    console.log("fetch: ", page)
     setTimeout(() => {
       setPage(page + 1);
       setIsFetch(true);
